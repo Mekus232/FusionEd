@@ -98,14 +98,14 @@ WSGI_APPLICATION = 'fusionEd.wsgi.application'
 
 # For Docker/PostgreSQL usage uncomment this and comment the DATABASES config above
 if os.environ.get("HOST"):
-    DATABASES = {
+   DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DATABASE_NAME", "postgres"),
-        "USER": os.getenv("DATABASE_USER", "postgres"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD", "123"),
-        "HOST": os.getenv("DATABASE_HOST", "db"),
-        "PORT": os.getenv("DATABASE_PORT", 5432),
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "db",  # set in docker-compose.yml
+        "PORT": 5432,  # default postgres port
     }
 }
 else:
