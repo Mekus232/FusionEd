@@ -1,0 +1,52 @@
+<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <div class="sb-sidenav-menu">
+        <div class="nav">
+            
+             <!--Sidebar link header-->
+            <div class="sb-sidenav-menu-heading">Core</div>
+            <!--Sidebar link header-->
+
+            <!--Normal sidebar-->
+            <!--<a class="nav-link" href="#"><div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Dashboard</a> -->
+            <a class="nav-link" href="#"><div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Add topics</a>
+            <a class="nav-link" href="#"><div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>Profile</a>
+            <a class="nav-link" href="#"><div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>All questions</a>
+            <!--end of Normal sidebar-->
+
+            <div class="sb-sidenav-menu-heading">EXAM</div>
+             <!--section breaker-->
+            
+             <!--Normal sidebar-->
+            {% comment %} <a class="nav-link" href="{% url "view-all-questions" %}"><div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>Questions</a> {% endcomment %}
+            <a class="nav-link" href="#"><div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>Scheduled Exam</a>
+            <a class="nav-link" href="#"><div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>Closed Exams</a>
+
+            {% comment %} <a class="nav-link" href="{% url "session-dashboard" %}"><div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>Analysis</a> {% endcomment %}
+              <!--end of Normal sidebar-->
+
+
+
+           
+            
+             
+
+            
+            
+            <!--end of Two layer collapsible-->
+
+
+            <div class="sb-sidenav-menu-heading">Password Request</div>
+            <a class="nav-link" href="#"><div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div> Students</a>
+            <!--<a class="nav-link" href="charts.html">
+                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                Charts
+            </a> -->
+           
+            
+        </div>
+    </div>
+    <div class="sb-sidenav-footer">
+        <div class="small">{{request.user.get_full_name}}</div>
+        
+    </div>
+</nav>
