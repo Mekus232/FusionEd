@@ -1,0 +1,134 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <nav aria-label="breadcrumb" class="main-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Student</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+        </ol>
+    </nav>
+    <div class="row gutters-sm">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+                    
+                        <!-- <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                                class="rounded-circle" width="150"> -->
+
+                                {% if request.user.student.image %}
+                                    <img src="{{request.user.student.image.url}}" alt="profile pic" class="rounded-circle" width="200" height="200">                 
+                                {% else %}
+                                    <img src="/media/photo/avatar.jpg" alt="profile pic" class="rounded-circle" width="200" height="200">
+
+                                {% endif %}
+                            <div class="mt-3">
+                                <h4>{{request.user}}</h4>
+                                <p class="text-danger mb-1"><strong>Student</strong></p>
+                                <p class="text-muted font-size-sm">Skodaji</p>
+                                
+                                
+                            </div>
+                        </div>
+                        {% comment %} <div class="row">
+                        <div class="col-6"><p class="text-secondary"><b>No of assigned subjects:</b></p></div>
+                        <div class="col-6"><p>{{count_course}}</p></div>
+                        </div>
+
+                        <div class="row">
+                        
+                        <div class="col-6"><p class="text-secondary"><b>Assigned subjects: </b></p></div>
+                        
+                        <div class="col-6">{% for sub in subjects %}<li class="list-unstyled">{{sub.name}}</li>{% endfor %}</div>
+                        
+                        
+                        </div> {% endcomment %}
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="d-grid gap-2 d-md-block">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Change Password
+                  </button>
+            </div>
+
+            <div class="card mb-3 mt-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Full Name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{user.first_name}} {{user.last_name}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Date of Birth</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{user.student.birth}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Gender</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{user.student.gender}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Class</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{user.student.grade}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a class="btn btn-md btn-secondary" 
+                                href="{% url "edit-student-profile" user.id %}"><i class="fas fa-pen"></i> Edit</a>
+                        </div>
+                        <!--target="__blank"-->
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-3" id="exampleModalLabel">Change Password</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST">
+            <div class="modal-body">
+                
+                    {% csrf_token %}
+                    {{changePassword | crispy}}
+                
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success">Save changes</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

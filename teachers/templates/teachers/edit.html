@@ -1,0 +1,71 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+
+{% block additional_head_css %}
+<!-- Include Tempus Dominus CSS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock additional_head_css %}
+
+{% block content %}
+    <!--<div class="card mb-4 mt-3 p-5">
+    </div>-->
+    <nav aria-label="breadcrumb" class="main-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Teacher</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Exam</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Exam</li>
+        </ol>
+    </nav>
+    <div class="card mx-auto w-100 ">
+        <div class="card-body text-justify">
+          <h3 class="card-title text-danger">EDIT {{obj_name}}</h3>
+          
+          
+          <form action="" method="post">
+          
+                {% csrf_token %}
+                {% crispy form %}
+                
+            
+        </form>
+        </div>
+      </div>
+{% endblock content %}
+
+{% block js %}
+
+      <script>
+        function convertMinutesToHoursAndMinutes(minutes) {
+            let hours = Math.floor(minutes / 60);
+            let remainingMinutes = minutes % 60;
+            return `${hours>1 ? `${hours} hours`: `${hours} hour`} ${remainingMinutes>0 ? `and ${remainingMinutes}minutes` : ""}`;
+        }
+
+        $("#id_retake").on("change", function(){
+            if ($("#id_retake").is(":checked")){
+                // if retake is on, check that the review too is on
+                if (!$("#id_review").prop("checked")){
+                    $("#id_review").prop("checked", true)
+                    $("#hint_id_retake span").text("Students must see score first before they can retake this exam")
+                }
+            }else{
+                $("#hint_id_retake span").text("")
+            }
+        })
+    
+        $("#id_review").on("change", function(){
+            //prevent teacher from toggling off the review button when retake is on
+            if ($("#id_retake").is(":checked")){
+                $("#id_review").prop("checked", true)
+                $("#hint_id_retake span").text("Exam retake option in on")
+            }
+        })
+
+        $("#id_duration").on("input", function(){
+            $(this).val() + ` MINS ~ ${convertMinutesToHoursAndMinutes($(this).val())}`
+            $("#hint_id_duration span").text(`${$(this).val() >= 60 ? convertMinutesToHoursAndMinutes($(this).val()): $(this).val()+ " Mins" }`)
+        })
+      </script>
+{% endblock js %}

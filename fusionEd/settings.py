@@ -36,14 +36,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "student", 
-    "teacher",
-    "account",
+    "users",
+    "teachers",
+    "students",
+    "exam",
+    
+    
     "crispy_forms",
     "crispy_bootstrap5",
+    "django_cleanup",
+    "tinymce",
 ]
 
-AUTH_USER_MODEL = "account.User"
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

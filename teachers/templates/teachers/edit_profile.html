@@ -1,0 +1,81 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+    <!--<div class="card mb-4 mt-3 p-5">
+    </div>-->
+    <nav aria-label="breadcrumb" class="main-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Teacher</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+        </ol>
+    </nav>
+    <div class="row gutters-sm">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+
+                        <!-- <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                            class="rounded-circle" width="150"> -->
+                        <img src="{{request.user.teacher.image.url}}" alt="Admin" class="rounded-circle" width="200"
+                            height="200">
+                        <div class="mt-3">
+                            <h4>{{request.user}}</h4>
+                            <p class="text-danger mb-1"><strong>Staff</strong></p>
+                            <p class="text-muted font-size-sm">Skodaji</p>
+                        </div>
+                        <div>
+                            <a href="{% url "edit-profile-image" request.user.teacher.id %}"
+                                class="btn btn-primary">Change Profile Picture</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="post" novalidate enctype="multipart/form-data" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                {{p_form.first_name | as_crispy_field}}
+                            </div>
+                            <div class="col-md-6">
+                                {{p_form.last_name | as_crispy_field}}
+                            </div>
+                        </div>
+                        {{p_form.username | as_crispy_field}}
+                        
+                        <div class="row">
+                            <div class="col-md-7">
+                                {{p_form.email | as_crispy_field}}
+                            </div>
+                            <div class="col-md-5">
+                                {{t_form.phone | as_crispy_field}}
+                            </div>
+                            <div class="col-md-2">
+                                {{t_form.gender | as_crispy_field}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button class="btn btn-success" type="submit"><i class="fas fa-save"></i> Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,327 @@
+{% extends "main.html" %}
+
+{% block additional_head_css %}
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.2/dist/bootstrap-table.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+{% endblock additional_head_css %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="main-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Teacher</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Question</li>
+    </ol>
+</nav>
+
+
+<div id="alert">
+    {% if  show_no_question_warning %}
+        <div class="auto-close alert alert-danger alert-dismissible fade show py-1" role="alert" >
+            <i class="fas fa-exclamation-triangle fa-sm"></i> 
+            "{{exam.name}}" is currently <b>ACTIVE</b>, but has no question(s) attached. Please consider either adding questions or deleting it.
+        </div>
+    {% endif %}
+    
+</div>
+
+
+
+<h2 class="mt-2">{{exam.subject.name}} | <code>{{exam.name}}</code></h2>
+
+<div class="d-grid gap-2 d-md-block">
+    {% if exam.get_exam_status == "active" and exam.ready is False %} 
+        <button id="add" class="btn btn-primary " disabled onclick="addQuestionToExam()">
+            <i class="fa fa-plus"></i> Add
+        </button>
+        <button id="remove" class="btn btn-secondary" disabled onclick="removeQuestionFromExam()">
+            <i class="fa fa-minus"></i> Remove
+        </button>
+    {% elif  exam.get_exam_status == "pending"   %}
+        <button id="add" class="btn btn-primary " disabled onclick="addQuestionToExam()">
+            <i class="fa fa-plus"></i> Add
+        </button>
+        <button id="remove" class="btn btn-secondary" disabled onclick="removeQuestionFromExam()">
+            <i class="fa fa-minus"></i> Remove
+        </button>
+    {% endif %}
+
+    {% if update_topic %}
+    <form action="" id="update_topic">      
+        <div class="input-group my-3 mb-3">                
+            <select name="topic" class="form-select" aria-label="Default select example" required>
+                <option value="" disabled selected >--------------------</option>  
+                {% for grade, topics in topics_grouped_by_grade.items %}  
+                    <optgroup label="{{ grade }}">
+                        {% for topic in topics %}
+                            <option value="{{topic.id}}">{{topic.name}}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endfor %} 
+            </select>        
+            <button disabled class="btn btn-outline-primary" type="submit" id="button-addon2">Update</button>
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+ 
+
+
+<div id="toolbar" class="{% if exam.get_exam_status != "pending" and exam.ready is True %} d-none {% endif %}">
+    <label class="mt-2">
+        <input type="checkbox" name="iconSize" value="0" id="id_unassigned">
+        <code>Unassigned questions</code>
+    </label>
+</div>
+<table
+    id="table" {% comment %} instanciate the table  {% endcomment %}
+    data-toggle="table"
+    data-ajax = "ajaxRequest" {% comment "" %}request{% endcomment %}
+    data-side-pagination="server" {% comment "" %}"server" or "client"{% endcomment %}
+    data-pagination="true"
+    data-pagination-pre-text="<"
+    data-pagination-next-text=">"
+    data-search="true"
+    data-page-list = "[5, 25, 50, 100, 200, 400,]"
+    data-pagination-loop = "false"
+    data-page-size = "100"   {% comment "" %}default no of rows{% endcomment %}
+    data-cache= "false"
+
+    data-search-highlight ="true"
+    data-toolbar="#toolbar"
+    data-click-to-select="false" {% comment "" %}click a row to select{% endcomment %}
+    data-unique-id="id" {% comment "" %}Indicate a unique identifier for each row.{% endcomment %}
+    data-detail-view="true" {% comment "" %}to show a detailed view table{% endcomment %}
+	  data-detail-view-by-click="false"
+    data-detail-formatter="detailFormatter" {% comment "" %}to show detail view table.{% endcomment %}
+
+    data-server-sort="false"
+    data-sort-reset= "false"
+>
+    <thead>
+        <tr>
+
+
+        <th data-field="check" data-checkbox="true"></th>
+        <th data-field="#" data-formatter="numberingFormatter">#</th>
+        <th data-field="question">Question</th>
+        <th data-field="topics__name">Topic</th>
+        <th data-field="status" data-formatter="statusFormatter" data-align="center">Assigned</th>
+        </tr>
+    </thead>
+
+</table>
+
+{% endblock content %}
+
+{% block js %}
+<script src="https://unpkg.com/bootstrap-table@1.22.2/dist/bootstrap-table.min.js"></script>
+
+<script>
+    var subject = "{{exam.subject.id}}"
+    var exam_id = "{{exam.id}}"
+    let request_params = {exam: exam_id, subject:subject, unassigned: $("#id_unassigned").val()}
+    var $table = $('#table')
+    var $add = $('#add')
+    var $remove = $('#remove')
+    var $update_topic_form = $('#update_topic')
+    let nos 
+
+    let selections 
+    
+    
+
+    function ajaxRequest(params) {
+        var url = location.origin + '/teacher/question-data'
+        
+        $.get(url+ '?' + $.param({...params.data,...request_params })).then(function (res) {
+            nos = res.offset //for numbering
+            params.success(res)
+            selections = []
+            $add.prop("disabled", true)
+            $remove.prop("disabled", true)
+        })
+    }
+
+
+    //format the question view
+    function detailFormatter(index, row) {
+        return `<div class="mx-auto border border-2 p-2">
+                 
+                 <p class="fw-bold fs-5" style=" margin-right: 50px;">Q: ${row.question}</p>
+                 <p class="ms-5"><span class="me-2 fw-bold">[A]</span> ${row.option_A} </p>
+                 <p class="ms-5"><span class="me-2 fw-bold">[B]</span> ${row.option_B} </p>
+                 <p class="ms-5"><span class="me-2 fw-bold">[C]</span> ${row.option_C} </p>
+                 <p class="ms-5"><span class="me-2 fw-bold">[D]</span> ${row.option_D} </p>
+                 <p class="ms-5"><span class="me-2 fst-italic text-decoration-underline">Answer</span> <span class="fw-bold">${row.answer} </span> </p>
+               </div>`
+    }
+    //format the question numbering
+    function numberingFormatter(){
+        nos = nos + 1
+        return nos
+      }
+
+
+    //filtering based on unassigned questions
+    $("#id_unassigned").on("click",function(){
+        if ($("#id_unassigned").is(':checked')){
+            request_params.unassigned = 1
+            $table.bootstrapTable('refresh')
+        }else{
+            request_params.unassigned = 0
+            $table.bootstrapTable('refresh')
+            $("#update_topic button[type=submit]").prop('disabled', true)
+        }
+    });
+
+    function statusFormatter(value, row, index){
+        if (row.exam__id){
+            return `<span class="text-success" title="Question has been added to {{exam.name}}"><i class="fas fa-check"></></span>`
+        }
+        
+    }
+    function counterFormatter(value, row, index){
+        return `${index + 1}`
+    }
+
+    function getIdSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.id
+        })
+    }
+
+    $table.on('check.bs.table uncheck.bs.table ' + 'check-all.bs.table uncheck-all.bs.table', function () {
+        $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
+        $add.prop('disabled', !$table.bootstrapTable('getSelections').length);
+        
+        $("#update_topic button[type=submit]").prop('disabled', !$table.bootstrapTable('getSelections').length);
+    
+        // save your data, here just save the current page
+        selections = getIdSelections()
+        // push or splice the selections if you want to save all data selections
+        
+    })                                                      
+    
+    $("#update_topic").on("submit", function(event){
+        event.preventDefault()
+        let topic = $("#update_topic select").val()
+        let msg 
+        $.ajax({
+            type:"POST",
+            url :'{% url "update-topic" %}',
+            data : {"csrfmiddlewaretoken": "{{csrf_token}}", "topic":topic, "ids": JSON.stringify(selections)},
+            success: function(success){
+                if("{{exam.get_exam_status}}" == "ended"){
+                    msg= '<a href="{% url "exam-dashboard" exam.id %}">Topic(s) added to question. Go back to {{exam.name}} analysis</a>'
+                }else{
+                    msg= 'Topic(s) added to question.'
+                }
+                createToast("success", msg)
+                $table.bootstrapTable('refresh')
+            },
+            error: function(error){
+                console.log(JSON.stringify(error))
+            }
+
+
+        })                       
+    })
+
+    function addQuestionToExam(){
+        url = location.origin + "/teacher/assign-question-to-exam/" + exam_id +"/"
+        console.log(url)
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {"id": JSON.stringify(selections),
+                    "csrfmiddlewaretoken": "{{csrf_token}}" 
+                },
+            success: function(success){
+                notify("success", success.message)
+                $table.bootstrapTable('refresh')
+                //close the alert element
+                const autoCloseElements = [...$(".auto-close")]
+                setTimeout(function () {
+                    autoCloseElements.forEach(el => fadeAndSlide(el));
+                }, 5000);
+
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+    }
+
+    function removeQuestionFromExam(){
+        url = location.origin + "/teacher/remove-question-from-exam/" + exam_id +"/"
+        console.log(url)
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {"id": JSON.stringify(selections),
+                    "csrfmiddlewaretoken": "{{csrf_token}}" 
+                },
+            success: function(success){
+
+                notify("success", success.message)
+                $table.bootstrapTable('refresh')
+                //close the alert element
+                const autoCloseElements = [...$(".auto-close")]
+                setTimeout(function () {
+                    autoCloseElements.forEach(el => fadeAndSlide(el));
+                }, 5000);
+
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+    }
+
+//alerts *****************************************************************************************************************
+
+function notify(color, msg){
+    $("#alert").html(`
+        <div class="auto-close alert alert-${color} alert-dismissible fade show py-1" role="alert" >
+            ${msg}
+        </div>
+    `)
+}
+
+function fadeAndSlide(element) {
+    const fadeDuration = 500;
+    const slideDuration = 500;
+
+    // Step 1: Fade out the element
+    let opacity = 1;
+    const fadeInterval = setInterval(function () {
+      if (opacity > 0) {
+        opacity -= 0.1;
+        element.style.opacity = opacity;
+      } else {
+        clearInterval(fadeInterval);
+        // Step 2: Slide up the element
+        let height = element.offsetHeight;
+        const slideInterval = setInterval(function () {
+          if (height > 0) {
+            height -= 10;
+            element.style.height = height + "px";
+          } else {
+            clearInterval(slideInterval);
+            // Step 3: Remove the element from the DOM
+            element.parentNode.removeChild(element);
+          }
+        }, slideDuration / 10);
+      }
+    }, fadeDuration / 10);
+  }
+// *****************************************************************************************************************
+
+
+
+</script>
+
+{% endblock js %}

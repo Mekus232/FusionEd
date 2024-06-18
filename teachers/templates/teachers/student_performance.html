@@ -1,0 +1,413 @@
+{% extends "main.html" %}
+{% load tz %}
+{% load static %}
+
+{% block title %}{{student}} performance{% endblock title %}
+
+{% block additional_head_css %}
+<link rel="stylesheet" href="{% static "css/analysis.css" %}">
+{% endblock additional_head_css %}
+
+
+
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Performance Details</h2>
+        <h6 class="bg-dark text-light p-2">Exam Summary</h6>
+
+        <div class="row">
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Exam Name: </p></div>
+                    <div class="col-6"><p>{{exam.name}}</p></div>
+                    </div>
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Scheduled Start Time:</p></div>
+                    <div class="col-6"><p>{{exam.start_date}}</p></div>
+                    </div>
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Scheduled End Time:</p></div>
+                    <div class="col-6"><p>{{exam.end_date}}</p></div>
+                </div>
+            </div>
+            <div class="col-2">
+                <img src="{% if student.student.image %}{{student.student.image.url}}{% else %}/media/photo/avatar.jpg{% endif %}" width="100px" height="100px" class="border border-3 img-fluid rounded float-end" alt="{{student.first_name}} img">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-body">
+
+        <div class="row">
+            
+            <div class="col-md-5 bg-light">
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Student Name:</p></div>
+                    <div class="col-6"><p>{{student_name}}</p></div>
+                 </div>
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Age: </p></div>
+                    <div class="col-6"><p>{{student.student.get_age}}</p></div>
+                 </div>
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Grade: </p></div>
+                    <div class="col-6"><p>{{student.student.grade}}</p></div>
+                 </div>
+            </div>
+
+            <div class="col-md-5  ms-auto bg-light" >
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Start Time:</p></div>
+                    <div class="col-6"><p>{{session.time_started}}</p></div>
+                 </div>
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">End Time: </p></div>
+                    <div class="col-6"><p>{{session.time_ended}}</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-4"><p class="fw-bold">Time Spent: </p></div>
+                    <div class="col-6"><p>{{session.seconds_to_hms}}</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4 gap-1 justify-content-between">
+            <div class="col-md-7">
+                <div class="card" >
+                    <div class="card-header"><h4>Answered vs Not answered</h4></div>
+                    <div class="card-body" style="height: 250px;">
+                        <canvas id="myChart"><p>Your browser doesn't suppport canvas</p></canvas>
+                    </div>
+                </div>
+            </div>
+
+      
+            <div class="col-md-4">                
+                <div class="card" >
+                    <div class="card-header"><h4>Score</h4></div>
+                    <div class="card-body " style="height: 250px;">
+                        <canvas id="score"><p>Your browser doesn't suppport canvas</p></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="row mt-2 ms-1 me-1">
+    {% comment %} <div class="col-4 col-md-2" style="border: 1px solid black;">
+        <div class=" py-2">
+            <h6>Attempts</h6>
+            <p class="fw-bold"> <br> <span class="text-secondary"> {% if exam.retake is not True %}1 {% else %} {{session.attempts}}{% endif %}</span></p>
+        </div>
+    </div> {% endcomment %}
+    <div class="col-4 col-md-2" style="border: 1px solid black;">
+        <div class=" py-2">
+            <h6>Correct</h6>
+            <p class="fw-bold">{{no_correct}} <br> <span class="text-secondary">in {{exam.get_no_question}}</span></p>
+        </div>
+    </div>
+    <div class="col-4 col-md-2" style="border: 1px solid black;">
+        <div class=" py-2">
+            <h6>Incorrect</h6>
+            <p class="fw-bold">{{no_incorrect}} <br> <span class="text-secondary">in {{exam.get_no_question}}</span></p>
+        </div>
+    </div>
+    <div class="col-4 col-md-2" style="border: 1px solid black;">
+        <div class=" py-2">
+            <h6>Unanswered</h6>
+            <p class="fw-bold">{{no_unanswered}} <br> <span class="text-secondary">in {{exam.get_no_question}}</span></p>
+        </div>
+    </div>
+    <div class="col-4 col-md-2" style="border: 1px solid black;">
+        <div class=" py-2">
+            <h6>Percentage</h6>
+            <p class="fw-bold">{{session.score}} <br> <span class="text-secondary">{{exam.pass_mark | floatformat}}% required</span></p>
+        </div>
+    </div>
+    <div class="col-4 col-md-2" style="border: 1px solid black;">
+        <div class=" py-2">
+            <h6>Result Status</h6>
+            <p class="fw-bold {% if session.passed == "Passed" %} text-success {% else %} text-danger{% endif %}">{{session.passed}} <br> <span class="text-secondary">Rank: -</span></p>
+        </div>
+    </div>
+    
+    
+</div>
+
+
+
+<div class="table-responsive mt-3">
+    <table class="table table-sm table-bordered table-hover table-striped">
+        <thead class="table-secondary border-secondary ">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"  class="col-10">Question</th>
+            <th scope="col" ></th>
+            <th scope="col" class="col-1 text-center">Answer</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for data in data_ %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td >{{data.question | truncatewords_html:10 | safe}}</td>
+                <td class="text-center"> <span class="btn seeDetails" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                        data-question = "{{data.question}}"
+                        data-no = "{{forloop.counter}}"
+                        data-A = "{{data.options_A}}"
+                        data-B = "{{data.options_B}}"
+                        data-C = "{{data.options_C}}"
+                        data-D = "{{data.options_D}}"
+                        data-answer = "{{data.answer}}"
+                        data-choice = "{{data.choice}}"
+                    ><i class="fas fa-file-alt"></i></span> </td>
+                
+                
+                <td class = "text-center">{% if data.choice == data.answer %}
+                    <span class="text-success fw-bold">Correct</span>
+                    {% elif data.choice == "" %}
+                    <span  class="text-danger fw-bold">N/A</span>
+                    {% else  %}
+                    <span  class="text-danger fw-bold">Incorrect</span>
+                    {% endif %}</td>
+            </tr>
+            
+            {% endfor %}
+
+       
+        
+        </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg  modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock content %}
+
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
+<script>
+    $(document).ready(function (){
+        var questionModal = document.getElementById('staticBackdrop')
+        questionModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var question = button.getAttribute("data-question")
+            var question_no = button.getAttribute("data-no")
+            var option_A = button.getAttribute("data-A")
+            var option_B = button.getAttribute("data-B")
+            var option_C = button.getAttribute("data-C")
+            var option_D = button.getAttribute("data-D")
+            var answer = button.getAttribute("data-answer")
+            var choice = button.getAttribute("data-choice")
+
+            var modalBody = questionModal.querySelector('.modal-body')
+            let map_answer = {"A": option_A, "B": option_B, "C":option_C, "D":option_D}
+             
+
+            modalBody.innerHTML = `
+            
+            <div class="d-flex justify-content-between bg-dark text-light" style="border: 2px solid black; padding: 5px;">
+                <div><span class="fw-bold">Subject:</span> {{exam.subject}}</div>
+                <div class="me-2"><span class="fw-bold">Question ID:</span> ${question_no}</div>
+                <div class="me-2"><span  style="background-color: #dff0d8;color: #3c763d;">Correct</span></div>
+                <div class="me-2"><span  style="color: #a94442; background-color: #f2dede;">Choice</span></div>
+            </div>
+
+            <div class="d-flex mt-4">
+                <div class="mx-3"><h4>Q</h4></div>
+                <div>${question}</div>
+            </div>
+
+            <div class="row ms-1 mt-3">
+                <div class="col-1" ><h4>A</h4></div>
+                <div class="col-11">
+                    <p class="${option_A == map_answer[answer] ? "correct" : (option_A == map_answer[choice]) ? "wrong" : "" }">[A] ${option_A}</p>
+                    <p class="${option_B == map_answer[answer] ? "correct" : (option_B == map_answer[choice]) ? "wrong" : "" }">[B] ${option_B}</p>
+                    <p class="${option_C == map_answer[answer] ? "correct" : (option_C == map_answer[choice]) ? "wrong" : "" }">[C] ${option_C}</p>
+                    <p class="${option_D == map_answer[answer] ? "correct" : (option_D == map_answer[choice]) ? "wrong" : "" }">[D] ${option_D}</p>
+                </div>
+            </div>
+
+
+            `
+            
+
+        })
+        
+        
+
+        // questionModal.addEventListener("show.bs.modal", function (event){
+        //     console.log(questionModal)
+        // })
+    //     jane = [...document.getElementsByClassName("seeDetails")]
+    //    jane.forEach(element => element.addEventListener("click" , ()=>{
+    //         console.log(element)
+    //    }));
+    })
+    
+</script>
+
+
+
+
+<script>
+    var max = "{{exam.get_no_question}}"
+
+
+    new Chart("myChart", {
+        type: "bar",
+    data: {
+        labels: ["Total question", "Correct answers"], //Y-axis label
+        datasets: [{
+            label: 'Total questions vs Correct answer', //labelling the graph
+            backgroundColor: ["#0d6efd80", "#00FF0080"], //colors for the bars
+            data: ["{{exam.get_no_question}}", "{{no_correct}}" ], //data to plot the graph
+            barPercentage: .7
+        }]
+    },
+    options: {
+        
+        maintainAspectRatio: false, //make it fit into the box
+        legend: {display: false}, //display legend on the graph
+        scales: {
+          yAxes: [{ticks: {min: 0, max:{{exam.get_no_question}}}}],
+          
+        }
+    }
+    });
+    
+    new Chart("score", {
+        type: "doughnut",
+        data: {
+            labels: ["Correct answers", "Total question"],
+            datasets: [{
+                backgroundColor: ["#00FF0080", "grey"],
+                data: ["{{no_correct}}", "{{exam.get_no_question}}"],
+                borderWidth: 3,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            elements: {
+                center: {
+                    text: "{{no_correct}}/{{exam.get_no_question}}",
+                    color: 'black', //color of the text
+                    fontStyle: 'Helvetica', //font style of the text
+                    sidePadding: 20 //padding for the text
+                }
+            }
+        },
+        plugins: [{
+            beforeDraw: function(chart) {
+                if (chart.config.options.elements.center) {
+                    // Get ctx from string
+                    var ctx = chart.chart.ctx;
+        
+                    // Get options from the center object in options
+                    var centerConfig = chart.config.options.elements.center;
+                    var fontStyle = centerConfig.fontStyle || 'Arial';
+                    var txt = centerConfig.text;
+                    var color = centerConfig.color || '#000';
+                    var maxFontSize = centerConfig.maxFontSize || 75;
+                    var sidePadding = centerConfig.sidePadding || 20;
+                    var sidePaddingCalculated = (sidePadding / 100) * (chart.innerRadius * 2);
+        
+                    // Start with a base font of 30px
+                    ctx.font = "30px " + fontStyle;
+        
+                    // Get the width of the string and also the width of the element minus 10 to give it 5px side padding
+                    var stringWidth = ctx.measureText(txt).width;
+                    var elementWidth = (chart.innerRadius * 2) - sidePaddingCalculated;
+        
+                    // Find out how much the font can grow in width.
+                    var widthRatio = elementWidth / stringWidth;
+                    var newFontSize = Math.floor(30 * widthRatio);
+                    var elementHeight = (chart.innerRadius * 2);
+        
+                    // Pick a new font size so it will not be larger than the height of label.
+                    var fontSizeToUse = Math.min(newFontSize, elementHeight, maxFontSize);
+                    var minFontSize = centerConfig.minFontSize;
+                    var lineHeight = centerConfig.lineHeight || 25;
+                    var wrapText = false;
+        
+                    if (minFontSize === undefined) {
+                        minFontSize = 20;
+                    }
+        
+                    if (minFontSize && fontSizeToUse < minFontSize) {
+                        fontSizeToUse = minFontSize;
+                        wrapText = true;
+                    }
+        
+                    // Set font settings to draw it correctly.
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    var centerX = ((chart.chartArea.left + chart.chartArea.right) / 2);
+                    var centerY = ((chart.chartArea.top + chart.chartArea.bottom) / 2);
+                    ctx.font = fontSizeToUse + "px " + fontStyle;
+                    ctx.fillStyle = color;
+        
+                    if (!wrapText) {
+                        ctx.fillText(txt, centerX, centerY);
+                    } else {
+                        var words = txt.split(' ');
+                        var line = '';
+                        var lines = [];
+        
+                        // Break words up into multiple lines if necessary
+                        for (var n = 0; n < words.length; n++) {
+                            var testLine = line + words[n] + ' ';
+                            var metrics = ctx.measureText(testLine);
+                            var testWidth = metrics.width;
+                            if (testWidth > elementWidth && n > 0) {
+                                lines.push(line);
+                                line = words[n] + ' ';
+                            } else {
+                                line = testLine;
+                            }
+                        }
+        
+                        // Move the center up depending on line height and number of lines
+                        centerY -= (lines.length / 2) * lineHeight;
+        
+                        for (var n = 0; n < lines.length; n++) {
+                            ctx.fillText(lines[n], centerX, centerY);
+                            centerY += lineHeight;
+                        }
+                        // Draw the remaining line
+                        ctx.fillText(line, centerX, centerY);
+                    }
+                }
+            }
+        }]
+    });
+    
+   
+    
+</script>
+
+
+{% endblock js %}
