@@ -61,6 +61,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "stimulating-key-spotless-statement-production.pipeops.app"
+]
+
+
 ROOT_URLCONF = 'fusionEd.urls'
 
 TEMPLATES = [
