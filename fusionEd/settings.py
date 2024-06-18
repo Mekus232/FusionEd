@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-kgvaeizl-)+8as5g7y(suz-h05*@p4w6rb8+tqu)2a%)cx$0@s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.43.196", "localhost",'https://stimulating-key-spotless-statement-production.pipeops.app']
+ALLOWED_HOSTS = ["127.0.0.1", "192.168.43.196", "localhost",'stimulating-key-spotless-statement-production.pipeops.app']
 
 # Application definition
 
