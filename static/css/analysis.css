@@ -1,0 +1,15 @@
+.correct{
+
+  padding: 6px 0px 6px 0px;
+  margin-bottom: 20px;
+  background-color: #dff0d8;
+  color: #3c763d;
+  
+}
+.wrong{
+ 
+  padding: 6px 0px 6px 0px;
+  margin-bottom: 20px;
+  color: #a94442;
+  background-color: #f2dede;
+}

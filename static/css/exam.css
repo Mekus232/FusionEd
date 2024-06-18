@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif
+} */
+
+.spinner-container {
+    display: block;
+    position: fixed;
+    z-index: 2060; /* Set a high z-index to keep it on top */
+    top: 0; /* Change to 0 to occupy the entire vertical space */
+    left: 0; /* Change to 0 to occupy the entire horizontal space */
+    width: 100%; /* Set the width to 100% */
+    height: 100%; /* Set the height to 100% */
+    background-color: rgba(152, 150, 150, 0.3); /*Add a semi-transparent background color
+    /* Add any other styling for your spinner */
+ }
+ 
+ 
+
+ .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%; 
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: conic-gradient(#0000 10%,#646de4);
+    -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 3.8px),#000 0);
+    animation: spinner-zp9dbg 1s infinite linear;
+ }
+ 
+ @keyframes spinner-zp9dbg {
+    to {
+       transform: rotate(1turn);
+    }
+ }
+  
+  
+
+/* .jumperbtn .col, #jumperbuttons .cols{
+    min-width: 40px;
+    max-width: 40px;
+    cursor: pointer;
+} */
+
+body {
+    /* height: 100vh; */
+    /* background-color: bisque; */
+    padding: 10px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/* .container {
+    margin: 10px auto 30px;
+    background: white;
+    padding: 20px 60px;
+} */
+
+
+
+/* label.box {
+    display: flex;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #ddd
+}
+
+.form-check-label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #0d6efd;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.form-check-label:hover{
+    background-color:#0d6efd;
+    color: white;
+}
+
+input[type="radio"] {
+    height: 15px;
+    width: 15px;
+    margin-top: 10px;
+    
+}
+
+#all_btns > div{
+    margin-bottom: 10px;
+} */
+
+
+.answered {
+    background-color: #c0dfe7;
+    color: #495057; /* Dark gray */
+}
+.active {
+    background-color: #333a2f; /* Pale blue */
+    color: #ebeddf; /* Dark blue */
+}
+.viewed {
+    background-color: #FFEFD5;
+    color: #A0522D; /* Sienna */
+}
+
+.correct{
+    width: 100%;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: none;
+}
+.wrong{
+    width: 100%;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.no_choice{
+    width: 100%;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid rgb(159, 156, 156);
+}
+
+
+
+
+
+
+/*  */
+label {
+    display: block; 
+    padding: 5px; 
+    position: relative; 
+    padding-left: 50px;
+    padding-top: 18px;
+}
+label input{
+    display: none;
+}
+label span {
+    border: 2px solid #c0dfe7; 
+    width: 30px; 
+    height: 30px; 
+    position: absolute; 
+    overflow: hidden; 
+    line-height: 1.7; 
+    text-align: center; 
+    border-radius: 100%; 
+    font-size: 10pt; 
+    left: 0; 
+    top: 50%; 
+    margin-top: -6.5px;
+}
+input:checked + span {
+    background: #c0dfe7; 
+    border-color: #014122
+}
+
+
+/* result styling */
+.reportContainer {
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    /* height: 100vh; */
+    /* margin: 0; */
+}
+.report-card {
+    max-width: 800px;
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+.report-card-header h1 {
+    color: #007bff;
+}
+.report-card-header p {
+    margin: 0;
+    color: #6c757d;
+}
+.student-info p {
+    text-align: left;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+
+.table thead th {
+    background-color: #007bff;
+    color: white; 
+}
+
+.btn-download {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+}
+
+.frac {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    letter-spacing: 0.001em;
+    text-align: center;
+}
+.frac > span {
+    display: block;
+    padding: 0;
+}
+.frac span.bottom {
+    border-top: thin solid black;
+}
+.frac span.symbol {
+    display: none;
+}
