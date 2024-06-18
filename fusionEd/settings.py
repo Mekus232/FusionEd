@@ -108,9 +108,7 @@ STORAGES = {
 #         "PORT": 5432,  # default postgres port
 #     }
 # }
-print("Just before i checked os environment")
 if os.environ.get("HOST"):
-    print("I came here")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
