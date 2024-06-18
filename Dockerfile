@@ -28,4 +28,4 @@
     EXPOSE $PORT
 
     # Use gunicorn on the given port
-    CMD gunicorn --bind :$PORT --workers 2 django_project.wsgi
+    CMD gunicorn --bind :$PORT --workers 2 fusionEd.wsgi
