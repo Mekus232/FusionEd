@@ -62,7 +62,7 @@ MIDDLEWARE = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "stimulating-key-spotless-statement-production.pipeops.app"
+    "https://stimulating-key-spotless-statement-production.pipeops.app"
 ]
 
 
