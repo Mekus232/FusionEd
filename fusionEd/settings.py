@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-kgvaeizl-)+8as5g7y(suz-h05*@p4w6rb8+tqu)2a%)cx$0@s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1", "192.168.43.196", "localhost",'stimulating-key-spotless-statement-production.pipeops.app']
 
 # Application definition
 
@@ -62,9 +62,7 @@ MIDDLEWARE = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://stimulating-key-spotless-statement-production.pipeops.app",
-    "https://humorous-humor-spotless-statement-production.pipeops.app"
-    
+    "https://stimulating-key-spotless-statement-production.pipeops.app"
 ]
 
 
@@ -114,11 +112,11 @@ if os.environ.get("HOST"):
     DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('POSTGRES_DB', 'postgres'),
-        "USER": os.getenv('POSTGRES_USER', 'postgres'),
-        "PASSWORD": os.getenv('POSTGRES_PASSWORD', 'postgres'),
-        "HOST": os.getenv('POSTGRES_HOST', 'db'),
-        "PORT": os.getenv('POSTGRES_PORT', 5432),
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "db",  # set in docker-compose.yml
+        "PORT": 5432,  # default postgres port
     }
 }
 else:
