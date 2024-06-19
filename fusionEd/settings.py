@@ -112,11 +112,11 @@ if os.environ.get("HOST"):
     DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "postgres"),
-        "USER": os.getenv("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
-        "HOST": os.getenv("POSTGRES_HOST", "db"),  # Docker Compose service name for the database
-        "PORT": int(os.getenv("POSTGRES_PORT", 5432)),  # Default PostgreSQL port
+        "NAME": os.getenv('POSTGRES_DB', 'postgres'),
+        "USER": os.getenv('POSTGRES_USER', 'postgres'),
+        "PASSWORD": os.getenv('POSTGRES_PASSWORD', 'postgres'),
+        "HOST": os.getenv('POSTGRES_HOST', 'db'),
+        "PORT": os.getenv('POSTGRES_PORT', 5432),
     }
 }
 else:
